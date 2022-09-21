@@ -14,7 +14,7 @@ namespace DeviceManagement_WebApp.Controllers
     {
         private readonly ConnectedOfficeContext _context;
 
-        public CategoriesController(ConnectedOfficeContext )
+        public CategoriesController(ConnectedOfficeContext context)
         {
             _context = context;
         }
