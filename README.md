@@ -14,3 +14,8 @@ SQL code for the Azure database to create the tables for the project
 # Initial Commit
 ### Is done on the ConnectedOffice file on 21.09.2022.
 ### Updated the readme file on 22.01.2022 to show the initial commit.
+
+# Appsettings.json & Repositories created.
+### appsetting.json file created and code was copied on 27.09.2022 
+### CatogoryRepository, DeviceRepository and ZoneRepository created.
+### All related codes changed and modified within the Controllers as well as the Repositories.
