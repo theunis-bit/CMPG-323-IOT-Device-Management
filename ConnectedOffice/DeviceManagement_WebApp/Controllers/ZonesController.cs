@@ -8,24 +8,25 @@ using Microsoft.EntityFrameworkCore;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
 using DeviceManagement_WebApp.Repository;
+using DeviceManagementWebApp.Repository;
 
 namespace DeviceManagement_WebApp.Controllers
 {
     public class ZonesController : Controller
     {
         private readonly ConnectedOfficeContext _context;
-        private ZoneRepository ZoneRepository = new ZoneRepository();
+        private readonly IZonesRepository _zonesRepository;
 
-        public ZonesController(ConnectedOfficeContext context)
+        public ZonesController(ConnectedOfficeContext context, IZonesRepository zonesRepository)
         {
             _context = context;
+            _zonesRepository = zonesRepository; 
         }
 
         // GET: Zones
         public async Task<IActionResult> Index()
         {
-            var results = ZoneRepository.GetAll();
-            return View(results);
+            return View(_zonesRepository.GetAll());
         }
 
         // GET: Zones/Details/5
@@ -36,8 +37,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = await _context.Zone
-                .FirstOrDefaultAsync(m => m.ZoneId == id);
+            var zone = _zonesRepository.GetById((Guid)id);
+                
             if (zone == null)
             {
                 return NotFound();
@@ -49,7 +50,7 @@ namespace DeviceManagement_WebApp.Controllers
         // GET: Zones/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new Zone());
         }
 
         // POST: Zones/Create
@@ -59,10 +60,8 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
         {
-            zone.ZoneId = Guid.NewGuid();
-            _context.Add(zone);
+            _zonesRepository.Insert(zone);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -74,7 +73,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = await _context.Zone.FindAsync(id);
+            var zone = _zonesRepository.GetById((Guid)id);
+
             if (zone == null)
             {
                 return NotFound();
@@ -96,7 +96,7 @@ namespace DeviceManagement_WebApp.Controllers
 
             try
             {
-                _context.Update(zone);
+                _zonesRepository.Update(zone);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -122,8 +122,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var zone = await _context.Zone
-                .FirstOrDefaultAsync(m => m.ZoneId == id);
+            var zone = _zonesRepository.GetById((Guid)id);
+                
             if (zone == null)
             {
                 return NotFound();
@@ -137,8 +137,7 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var zone = await _context.Zone.FindAsync(id);
-            _context.Zone.Remove(zone);
+            _zonesRepository.Delete(id);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

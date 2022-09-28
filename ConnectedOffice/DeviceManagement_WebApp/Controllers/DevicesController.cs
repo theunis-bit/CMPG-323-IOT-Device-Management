@@ -8,24 +8,25 @@ using Microsoft.EntityFrameworkCore;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
 using DeviceManagement_WebApp.Repository;
+using DeviceManagementWebApp.Repository;
 
 namespace DeviceManagement_WebApp.Controllers
 {
     public class DevicesController : Controller
     {
         private readonly ConnectedOfficeContext _context;
-        private DeviceRepository DeviceRepository = new DeviceRepository();
+        private readonly IDeviceRepository _deviceRepository;
 
-        public DevicesController(ConnectedOfficeContext context)
+        public DevicesController(ConnectedOfficeContext context, IDeviceRepository deviceRepository)
         {
             _context = context;
+            _deviceRepository = deviceRepository;
         }
 
         // GET: Devices
         public async Task<IActionResult> Index()
         {
-            var result = DeviceRepository.GetAll();
-            return View(result);
+            return View(_deviceRepository.GetAll());
         }
 
         // GET: Devices/Details/5
@@ -36,10 +37,9 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var device = await _context.Device
-                .Include(d => d.Category)
-                .Include(d => d.Zone)
-                .FirstOrDefaultAsync(m => m.DeviceId == id);
+            var device = _deviceRepository.GetById((Guid)id);
+                
+
             if (device == null)
             {
                 return NotFound();
@@ -53,7 +53,7 @@ namespace DeviceManagement_WebApp.Controllers
         {
             ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName");
             ViewData["ZoneId"] = new SelectList(_context.Zone, "ZoneId", "ZoneName");
-            return View();
+            return View(new Device());
         }
 
         // POST: Devices/Create
@@ -63,8 +63,7 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DeviceId,DeviceName,CategoryId,ZoneId,Status,IsActive,DateCreated")] Device device)
         {
-            device.DeviceId = Guid.NewGuid();
-            _context.Add(device);
+            _deviceRepository.Insert(device);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
 
@@ -79,7 +78,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var device = await _context.Device.FindAsync(id);
+            var device = _deviceRepository.GetById((Guid)id);
+
             if (device == null)
             {
                 return NotFound();
@@ -102,7 +102,7 @@ namespace DeviceManagement_WebApp.Controllers
             }
             try
             {
-                _context.Update(device);
+                _deviceRepository.Update(device);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -128,10 +128,8 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var device = await _context.Device
-                .Include(d => d.Category)
-                .Include(d => d.Zone)
-                .FirstOrDefaultAsync(m => m.DeviceId == id);
+            var device = _deviceRepository.GetById((Guid)id);
+
             if (device == null)
             {
                 return NotFound();
@@ -145,8 +143,7 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var device = await _context.Device.FindAsync(id);
-            _context.Device.Remove(device);
+            _deviceRepository.Delete(id);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
