@@ -25,7 +25,7 @@ SQL code for the Azure database to create the tables for the project
 ### IDeviceRepositoriy created.
 ### IZonesRepository created.
 
-#References.
+# References.
 ### JacquiM for the database code.
 ### https://www.linkedin.com/pulse/repository-pattern-c-pawan-verma/
 ### https://learn.microsoft.com/en-us/training/paths/aspnet-core-web-app/
