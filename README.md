@@ -19,3 +19,19 @@ SQL code for the Azure database to create the tables for the project
 ### appsetting.json file created and code was copied on 27.09.2022 
 ### CatogoryRepository, DeviceRepository and ZoneRepository created.
 ### All related codes changed and modified within the Controllers as well as the Repositories.
+
+#Created the Interface Repositories on 28.09.2022
+### ICategoriesRepository created.
+### IDeviceRepositoriy created.
+### IZonesRepository created.
+
+#References.
+### JacquiM for the database code.
+### https://www.linkedin.com/pulse/repository-pattern-c-pawan-verma/
+### https://learn.microsoft.com/en-us/training/paths/aspnet-core-web-app/
+### https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/overview/asp-net-mvc-overview
+### https://learn.microsoft.com/en-us/training/modules/secure-aspnet-core-identity/
+### https://www.c-sharpcorner.com/UploadFile/bd5be5/design-patterns-in-net/
+### https://www.c-sharpcorner.com/uploadfile/babu_2082/architectural-patterns-in-net/
+
+
